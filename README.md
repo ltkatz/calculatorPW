@@ -39,9 +39,9 @@ Each individual test in the suite has a video associated - sample videos are sto
 ## Files
 
 readme.md - documentation
-.spec.ts - test definitions
-helpers.ts - reusable functions to improve maintainability
-lookup.ts - constants for parameters that are reused frequently, single point of change to improve maintainability. This would be much more important in a Cypress implementation!
+tests/inputs.spec.ts - test definitions
+tests/helpers.ts - reusable functions to improve maintainability
+tests/lookup.ts - constants for parameters that are reused frequently, single point of change to improve maintainability. This would be much more important in a Cypress implementation!
 playwright.config.ts - configuration file, currently set to have video always on and to ignore HTTPS errors (helpful if using a proxy) and to run on a single runner
 playwright-report - contains the report and videos from the last run
 videos - conains sample videos from my runs
