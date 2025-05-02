@@ -14,11 +14,15 @@ import { ALL_CLEAR,
 import { numberAsClicks } from './helpers.ts';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://google.com');
+  if (await test.info().project.name == 'chromium')
+  {await page.goto('http://google.com');
   await page.getByRole('combobox', { name: 'Search' }).fill('calculator');
-  await page.keyboard.press('Enter');
+  await page.keyboard.press('Enter');}
+  
+  else {await page.goto('http://google.com/search?q=calculator');}
+  
   // wait for manual captcha clear
-  await page.waitForTimeout(15000);
+  await page.waitForTimeout(20000);
 });
 
 test('verify visible and AC - CE transitions', async ({ page }) => {
@@ -71,7 +75,7 @@ test('verify display', async ({ page }) => {
   await page.getByRole('button', { name: '0' }).click();
   await page.getByRole('button', { name: '9' }).click();
   await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('12345.67809');
-  await page.getByRole('button', { name: 'clear entry' }).click();
+  await page.getByRole('button', { name: CLEAR_ENTRY }).click();
   await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('12345.6780');
   await page.close();
   
@@ -108,26 +112,26 @@ test('verify keyboard functions', async ({ page }) => {
 test('test addition operation', async ({ page }) => {
 
   await page.getByRole('button', { name: '1' }).click();
-  await page.getByRole('button', { name: 'point' }).click();
+  await page.getByRole('button', { name: POINT }).click();
   await page.getByRole('button', { name: '6' }).click();
-  await page.getByRole('button', { name: 'plus' }).click();
+  await page.getByRole('button', { name: PLUS }).click();
   await page.getByRole('button', { name: '2' }).click();
-  await page.getByRole('button', { name: 'point' }).click();
+  await page.getByRole('button', { name: POINT }).click();
   await page.getByRole('button', { name: '3' }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('1.6 + 2.3');
-  await page.getByRole('button', { name: 'equals' }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('3.9');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('1.6 + 2.3');
+  await page.getByRole('button', { name: EQUALS }).click();
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('3.9');
   await page.close();
   
 });
 
 test('test subtraction operation', async ({ page }) => {
   await numberAsClicks(-7.6,page);
-  await page.getByRole('button', { name: 'minus' }).click();
+  await page.getByRole('button', { name: MINUS }).click();
   await numberAsClicks(2.3,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('-7.6 - 2.3');
-  await page.getByRole('button', { name: 'equals' }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('-9.9');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('-7.6 - 2.3');
+  await page.getByRole('button', { name: EQUALS }).click();
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('-9.9');
   await page.close();
   //note pressing minus twice doesn't work!
 });
@@ -137,25 +141,25 @@ test('test multiplication operation', async ({ page }) => {
   await numberAsClicks(8.7,page);
   await page.getByRole('button', { name: MULTIPLY }).click();
   await numberAsClicks(5.4,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('8.7 × 5.4');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('8.7 × 5.4');
   await page.getByRole('button', { name: EQUALS }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('46.98');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('46.98');
   await page.getByRole('button', { name: ALL_CLEAR }).click();
 
   await numberAsClicks(-7.6,page);
   await page.getByRole('button', { name: MULTIPLY }).click();
   await numberAsClicks(2.3,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('-7.6 × 2.3');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('-7.6 × 2.3');
   await page.getByRole('button', { name: EQUALS }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('-17.48');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('-17.48');
   await page.getByRole('button', { name: ALL_CLEAR }).click();
 
   await numberAsClicks(-1.4,page);
   await page.getByRole('button', { name: MULTIPLY }).click();
   await numberAsClicks(-5.8,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('-1.4 × -5.8');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('-1.4 × -5.8');
   await page.getByRole('button', { name: EQUALS }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('8.12');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('8.12');
   await page.getByRole('button', { name: ALL_CLEAR }).click();
 
   await page.close();
@@ -166,25 +170,25 @@ test('test division operation', async ({ page }) => {
   await numberAsClicks(6.8,page);
   await page.getByRole('button', { name: DIVIDE }).click();
   await numberAsClicks(5.6,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('6.8 ÷ 5.6');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('6.8 ÷ 5.6');
   await page.getByRole('button', { name: EQUALS }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('1.21428571429');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('1.21428571429');
   await page.getByRole('button', { name: ALL_CLEAR }).click();
 
   await numberAsClicks(-6.6,page);
   await page.getByRole('button', { name: DIVIDE }).click();
   await numberAsClicks(2.3,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('-6.6 ÷ 2.3');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('-6.6 ÷ 2.3');
   await page.getByRole('button', { name: EQUALS }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('-2.86956521739');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('-2.86956521739');
   await page.getByRole('button', { name: ALL_CLEAR }).click();
 
   await numberAsClicks(-1.4,page);
   await page.getByRole('button', { name: DIVIDE }).click();
   await numberAsClicks(-9.8,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('-1.4 ÷ -9.8');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('-1.4 ÷ -9.8');
   await page.getByRole('button', { name: EQUALS }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('0.14285714285');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('0.14285714285');
   await page.getByRole('button', { name: ALL_CLEAR }).click();
   
   await page.close();
@@ -195,15 +199,16 @@ test('test decimals disappear when result is whole numbers', async ({ page }) =>
   await numberAsClicks(6.8,page);
   await page.getByRole('button', { name: DIVIDE }).click();
   await numberAsClicks(6.8,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('6.8 ÷ 6.8');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('6.8 ÷ 6.8');
   await page.getByRole('button', { name: EQUALS }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('1');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('1');
   await page.getByRole('button', { name: ALL_CLEAR }).click();
 
-  await numberAsClicks(2.0,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('2.0');
+  await numberAsClicks(2.01,page);
+  await page.getByRole('button', { name: CLEAR_ENTRY }).click();
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('2.0');
   await page.getByRole('button', { name: EQUALS }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('2');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('2');
   await page.getByRole('button', { name: ALL_CLEAR }).click();
 
   await page.close();
@@ -214,17 +219,17 @@ test('test display of very large and very small numbers and operations on them',
   await numberAsClicks(999999999999,page);
   await page.getByRole('button', { name: DIVIDE }).click();
   await numberAsClicks(3,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('999999999999 ÷ 3');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('999999999999 ÷ 3');
   await page.getByRole('button', { name: EQUALS }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('333333333333');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('333333333333');
   await page.getByRole('button', { name: ALL_CLEAR }).click();
 
   await numberAsClicks(0.1111111111,page);
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('0.1111111111');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('0.1111111111');
   await page.getByRole('button', { name: MULTIPLY }).click();
   await numberAsClicks(2,page);
   await page.getByRole('button', { name: EQUALS }).click();
-  await expect(page.locator(DISPLAY_ELEMENT)).toContainText('0.2222222222');
+  await expect(page.locator(DISPLAY_ELEMENT)).toHaveText('0.2222222222');
   await page.getByRole('button', { name: ALL_CLEAR }).click();
 
   await page.close();
