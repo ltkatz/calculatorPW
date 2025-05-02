@@ -1,0 +1,70 @@
+import { test, expect } from '@playwright/test';
+
+import {chromium } from "playwright-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth"
+
+
+test.use({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.2227.0 Safari/537.36'});
+
+Object.defineProperty(navigator, 'webdriver', {
+  get: () => undefined,
+});
+
+test('test', (async () => {
+  chromium.use(StealthPlugin())
+  //launch Chromium browser instance
+  const browser = await chromium.launch({/*proxy: {
+    server: 'http://unblock.oxylabs.io:60000',
+    username: 'ltkatz_3MMep',
+    password: 'yXoLBS1+erfg',
+    },*/
+  });
+ 
+  //create new context
+  const context = await browser.newContext();
+  
+  //add init script
+  await context.addInitScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+ 
+  //open new page using context
+  const page = await browser.newPage();
+ 
+  //navigate to target website
+  await page.goto('http://google.com/search?q=calculator', {waitUntil: 'commit'})
+  //await page.getByRole('combobox', { name: 'Search' }).fill('calculator');
+  //await page.keyboard.press();
+  // wait for the page to load
+  await page.waitForTimeout(10000);
+  
+  //take a screenshot and save to a file
+  await page.screenshot({ path: 'example.png' });
+  await page.getByRole('button', { name: '0' }).click();
+  await page.waitForTimeout(10000);
+  // Turn off the browser.
+  await browser.close();
+  
+}));
+
+/*
+test('test', async ({ page }) => {
+  /*await page.goto('https://www.google.com/');
+  await page.getByRole('combobox', { name: 'Search' }).fill('calculator');
+  await page.keyboard.press('Enter');*/
+  //await page.goto('https://www.google.com/search?q=calculator');
+  //await page.locator('iframe[name="a-kbcjq8ld4y3h"]').contentFrame().getByRole('checkbox', { name: 'I\'m not a robot' }).click();
+  /*await page.getByRole('button', { name: '0' }).click();
+  await page.getByRole('button', { name: '2' }).click();
+  await page.getByRole('button', { name: '3' }).click();
+  await page.getByRole('button', { name: '4' }).click();
+  await page.getByRole('button', { name: '6' }).click();
+  await page.getByRole('button', { name: '8' }).click();
+  await page.getByRole('button', { name: 'point' }).click();
+  await page.getByRole('button', { name: 'equals' }).click();
+  await page.getByRole('button', { name: 'plus' }).click();
+  await page.getByRole('button', { name: 'minus' }).click();
+  await page.getByRole('button', { name: 'multiply' }).click();
+  await page.getByRole('button', { name: 'divide' }).click();
+  await page.getByRole('button', { name: 'clear entry' }).click();
+  //await page.locator('.z7BZJb').click();
+  await page.locator('#cwos').click();
+});*/
