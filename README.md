@@ -1,12 +1,12 @@
 # Calculator test demo
 
-This is a demo of e2e tests of Google's calculator that is displayed when seaarching for the term calculator. Implemented using Playwright
+This is a demo of e2e tests of Google's calculator that is displayed when searching for the term calculator. Implemented using Playwright
 
 ## Pre-requisites
 
-NPM
-Node.js
-Playwright insalled with dependencies
+- NPM
+- Node.js
+- Playwright insalled with dependencies
 
 ## Use
 
@@ -96,7 +96,7 @@ Each individual test in the suite has a video associated - sample videos are sto
 - Mobile viewports remain disabled in playwright.config
 
 ## Stretch tasks
-- Reusable method to accept the proposed operation and return random numbers for operations and the expected result of the operation - this creates a very interestig potential issue - if the test and the calculator use the same math library and it has a bug, this could mask the bug! Extremely unlikely of course but something to consider if in production!
+- Reusable method to accept the proposed operation and return random numbers for operations and the expected result of the operation - this creates a very interestig potential issue - if the test and the calculator use the same math library and if it has a bug, this could mask the bug! Extremely unlikely of course but something to consider if in production!
 - CAPTCHA handling
 - Checking that past operation (right above the result) shows correct results
 - Mobile viewport specific tests 
